@@ -8,36 +8,40 @@ using UnityEngine.InputSystem;
 
 public class Carregar : MonoBehaviour
 {
-    [SerializeField]
-    Transform pontoSoltar;
+    [SerializeField] Transform pontoSoltar;
+    [SerializeField] Transform pontoCarregar;
+    Rigidbody rb;
 
     StarterAssetsMaps joaozinho;
-    InputAction fireTwo;
+    InputAction fireTwo, fireOne;
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         joaozinho = new StarterAssetsMaps();
         fireTwo=joaozinho.Player.FireTwo;
+        fireOne = joaozinho.Player.FireOne;
+        fireOne.Enable();
         fireTwo.Enable();
-
+        
     }
     bool soltou = false;
     bool carregando = false;
     public void OnPointerDown()
     {
+        gameObject.transform.position=pontoCarregar.position;
+        rb.isKinematic = true;
         carregando = true;
-    }
-
-    public void OnPointerUp()
-    {
-        carregando=false;
     }
 
     private void Update()
     {
-        if (carregando)
-        {
-            transform.position = pontoSoltar.position;
-        }
+     if (!carregando) return;
+     if (fireOne.WasReleasedThisFrame())
+     {
+          transform.position= pontoSoltar.position;
+          rb.isKinematic = false;
+          carregando= false;
+     }
     }
 }
